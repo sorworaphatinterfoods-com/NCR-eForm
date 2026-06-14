@@ -55,7 +55,7 @@ export default {
         }
         if (method === 'PATCH') {
           const body = await req.json();
-          const ALLOWED = ['nc_description','severity','status','immediate_action','lot_no',
+          const ALLOWED = ['ncr_id','nc_description','severity','status','immediate_action','lot_no',
             'product_lot_no','hold_location','disposition','dispositioned_by','root_cause',
             'corrective_action','preventive_action','assignee','target_date','reply_date',
             'verification_result','verification_note','verified_by','verified_at',
@@ -72,7 +72,7 @@ export default {
           sets.push("updated_at=datetime('now')");
           vals.push(id);
           await DB.prepare(`UPDATE ncr_records SET ${sets.join(',')} WHERE ncr_id=?`).bind(...vals).run();
-          return ok({ success: true });
+          return ok({ success: true, ncr_id: body.ncr_id || id });
         }
       }
 
