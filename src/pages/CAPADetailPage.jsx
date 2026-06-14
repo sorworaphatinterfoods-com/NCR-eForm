@@ -132,8 +132,7 @@ export default function CAPADetailPage() {
     try {
       if (isNew) {
         const res = await capaApi.create(form)
-        const newId = res?.capa_id ?? res?.data?.capa_id
-        navigate(`/capa/${newId}`)
+        navigate(`/capa/${res.id}`)
       } else {
         await capaApi.update(id, form)
         setSaveMsg('บันทึกสำเร็จ')
