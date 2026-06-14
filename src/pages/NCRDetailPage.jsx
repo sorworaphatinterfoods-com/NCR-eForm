@@ -94,7 +94,6 @@ export default function NCRDetailPage() {
     ]).then(([ncr, capaList]) => {
       const d = ncr || {}
       setForm({
-        ncr_id: d.ncr_id || '',
         source_type: d.source_type || '',
         found_date: d.found_date ? d.found_date.slice(0, 10) : '',
         product_lot_no: d.product_lot_no || '',
@@ -132,7 +131,7 @@ export default function NCRDetailPage() {
     try {
       if (isNew) {
         const res = await ncrApi.create({ ...form, ncr_id: form.ncr_id.trim() })
-        navigate(`/ncr/${res.id}`)
+        navigate(`/ncr/${res.ncr_id}`)
       } else {
         await ncrApi.update(id, form)
         setSaveMsg('บันทึกสำเร็จ')
@@ -206,13 +205,19 @@ export default function NCRDetailPage() {
               <div className="p-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="sm:col-span-2">
                   <FieldRow label="NC No. *">
-                    <input
-                      type="text"
-                      className={inputCls + ' font-mono font-semibold'}
-                      value={form.ncr_id}
-                      onChange={set('ncr_id')}
-                      placeholder="เช่น NCR-2506-001"
-                    />
+                    {isNew ? (
+                      <input
+                        type="text"
+                        className={inputCls + ' font-mono font-semibold'}
+                        value={form.ncr_id}
+                        onChange={set('ncr_id')}
+                        placeholder="เช่น NCR-2506-001"
+                      />
+                    ) : (
+                      <div className="border border-gray-200 bg-gray-50 rounded-lg px-3 py-2 text-sm font-mono font-semibold text-blue-800">
+                        {id}
+                      </div>
+                    )}
                   </FieldRow>
                 </div>
                 <FieldRow label="แหล่งที่มา (Source Type)">

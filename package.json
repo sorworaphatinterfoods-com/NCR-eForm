@@ -8,11 +8,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@base44/sdk": "^0.8.32",
-    "lucide-react": "^0.344.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-router-dom": "^6.22.0"
+    "react-router-dom": "^6.22.0",
+    "lucide-react": "^0.344.0"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.2.1",

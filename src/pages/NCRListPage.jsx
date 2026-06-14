@@ -65,8 +65,8 @@ export default function NCRListPage() {
           <div className="flex items-center gap-3">
             <FileText className="w-6 h-6" />
             <div>
-              <div className="font-bold text-lg">NCR eForm</div>
-              <div className="text-blue-200 text-xs">ศ.วรภัทร อินเตอร์ ฟู้ดส์ จำกัด</div>
+              <div className="font-bold text-lg">NCR eForm — D1</div>
+              <div className="text-blue-200 text-xs">Sorworaphat Foods · smart-qa-db</div>
             </div>
           </div>
           <div className="flex gap-2 ml-4">
@@ -130,11 +130,11 @@ export default function NCRListPage() {
                 </td></tr>
               ) : filtered.map((r, i) => (
                 <tr
-                  key={r.id}
-                  onClick={() => navigate(`/ncr/${r.id}`)}
+                  key={r.ncr_id}
+                  onClick={() => navigate(`/ncr/${r.ncr_id}`)}
                   className={`border-t hover:bg-blue-50 transition cursor-pointer ${i % 2 === 0 ? '' : 'bg-gray-50'}`}
                 >
-                  <td className="px-4 py-3 font-mono text-blue-800 font-medium">{r.ncr_id || r.id?.slice(0, 8)}</td>
+                  <td className="px-4 py-3 font-mono text-blue-800 font-medium">{r.ncr_id}</td>
                   <td className="px-4 py-3 text-gray-600">{fmt(r.issue_date)}</td>
                   <td className="px-4 py-3 text-xs">{SOURCE_TH[r.source_type] || r.source_type || '-'}</td>
                   <td className="px-4 py-3 max-w-xs truncate" title={r.nc_description}>{r.nc_description || '-'}</td>
@@ -152,7 +152,7 @@ export default function NCRListPage() {
                   </td>
                   <td className="px-4 py-3 text-center" onClick={e => e.stopPropagation()}>
                     <button
-                      onClick={() => navigate(`/ncr/${r.id}/print`)}
+                      onClick={() => navigate(`/ncr/${r.ncr_id}/print`)}
                       className="inline-flex items-center gap-1 bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg text-xs font-medium transition"
                     >
                       <Printer className="w-3.5 h-3.5" />พิมพ์ A4
@@ -160,7 +160,7 @@ export default function NCRListPage() {
                   </td>
                   <td className="px-4 py-3 text-center" onClick={e => e.stopPropagation()}>
                     <button
-                      onClick={() => navigate(`/ncr/${r.id}`)}
+                      onClick={() => navigate(`/ncr/${r.ncr_id}`)}
                       className="inline-flex items-center gap-1 bg-gray-600 hover:bg-gray-700 text-white px-3 py-1.5 rounded-lg text-xs font-medium transition"
                     >
                       แก้ไข/ดู

@@ -49,8 +49,8 @@ export default function CAPAListPage() {
           <div className="flex items-center gap-3">
             <ClipboardList className="w-6 h-6" />
             <div>
-              <div className="font-bold text-lg">CAPA Management</div>
-              <div className="text-blue-200 text-xs">Corrective & Preventive Action</div>
+              <div className="font-bold text-lg">CAPA Management — D1</div>
+              <div className="text-blue-200 text-xs">Corrective & Preventive Action · smart-qa-db</div>
             </div>
           </div>
           <div className="flex gap-2 ml-4">
@@ -115,12 +115,8 @@ export default function CAPAListPage() {
                   <ClipboardList className="w-10 h-10 mx-auto mb-2 opacity-30" />ไม่พบข้อมูล CAPA
                 </td></tr>
               ) : filtered.map((r, i) => (
-                <tr
-                  key={r.id}
-                  onClick={() => navigate(`/capa/${r.id}`)}
-                  className={`border-t hover:bg-blue-50 transition cursor-pointer ${i % 2 === 0 ? '' : 'bg-gray-50'}`}
-                >
-                  <td className="px-4 py-3 font-mono font-medium text-blue-800">{r.capa_id || r.id?.slice(0, 8)}</td>
+                <tr key={r.capa_id} className={`border-t hover:bg-blue-50 transition ${i % 2 === 0 ? '' : 'bg-gray-50'}`}>
+                  <td className="px-4 py-3 font-mono font-medium text-blue-800">{r.capa_id}</td>
                   <td className="px-4 py-3 max-w-xs truncate" title={r.description}>{r.description || '-'}</td>
                   <td className="px-4 py-3 font-mono text-xs text-gray-600">{r.source_ref || '-'}</td>
                   <td className="px-4 py-3 text-xs">{r.source || '-'}</td>
@@ -136,17 +132,17 @@ export default function CAPAListPage() {
                       {r.status || '-'}
                     </span>
                   </td>
-                  <td className="px-4 py-3 text-center" onClick={e => e.stopPropagation()}>
+                  <td className="px-4 py-3 text-center">
                     <button
-                      onClick={() => navigate(`/capa/${r.id}/print`)}
+                      onClick={() => navigate(`/capa/${r.capa_id}/print`)}
                       className="inline-flex items-center gap-1 bg-teal-600 hover:bg-teal-700 text-white px-3 py-1.5 rounded-lg text-xs font-medium transition"
                     >
                       <Printer className="w-3.5 h-3.5" />พิมพ์ A4
                     </button>
                   </td>
-                  <td className="px-4 py-3 text-center" onClick={e => e.stopPropagation()}>
+                  <td className="px-4 py-3 text-center">
                     <button
-                      onClick={() => navigate(`/capa/${r.id}`)}
+                      onClick={() => navigate(`/capa/${r.capa_id}`)}
                       className="inline-flex items-center gap-1 bg-gray-600 hover:bg-gray-700 text-white px-3 py-1.5 rounded-lg text-xs font-medium transition"
                     >
                       แก้ไข/ดู

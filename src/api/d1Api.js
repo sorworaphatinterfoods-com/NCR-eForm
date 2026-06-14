@@ -1,19 +1,32 @@
-import { base44 } from './base44Client';
+import { API_URL } from '../config'
 
-const NCR = base44.entities.NcrRecord;
-const CAPA = base44.entities.CapaAction;
+async function request(path, options = {}) {
+  const res = await fetch(`${API_URL}${path}`, {
+    ...options,
+    headers: { 'Content-Type': 'application/json', ...options.headers },
+  })
+  const data = await res.json()
+  if (!res.ok) throw new Error(data?.error || `HTTP ${res.status}`)
+  return data
+}
 
 export const ncrApi = {
-  list: () => NCR.list('-issue_date', 200),
-  get: (id) => NCR.get(id),
-  create: (body) => NCR.create(body),
-  update: (id, body) => NCR.update(id, body),
-};
+  list: (params = {}) => {
+    const q = new URLSearchParams(params)
+    return request(`/api/ncr?${q}`)
+  },
+  get: (id) => request(`/api/ncr/${id}`),
+  create: (body) => request('/api/ncr', { method: 'POST', body: JSON.stringify(body) }),
+  update: (id, body) => request(`/api/ncr/${id}`, { method: 'PATCH', body: JSON.stringify(body) }),
+}
 
 export const capaApi = {
-  list: () => CAPA.list('-created_at', 200),
-  get: (id) => CAPA.get(id),
-  create: (body) => CAPA.create(body),
-  update: (id, body) => CAPA.update(id, body),
-  listByNcr: (ncrId) => CAPA.filter({ source_ref: ncrId }),
-};
+  list: (params = {}) => {
+    const q = new URLSearchParams(params)
+    return request(`/api/capa?${q}`)
+  },
+  get: (id) => request(`/api/capa/${id}`),
+  create: (body) => request('/api/capa', { method: 'POST', body: JSON.stringify(body) }),
+  update: (id, body) => request(`/api/capa/${id}`, { method: 'PATCH', body: JSON.stringify(body) }),
+  listByNcr: (ncrId) => request(`/api/capa?ncr_id=${encodeURIComponent(ncrId)}`),
+}
