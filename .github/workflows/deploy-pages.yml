@@ -1,6 +1,7 @@
 name: Deploy NCR eForm Frontend (Pages)
 
 on:
+  workflow_dispatch:
   push:
     branches: [main, claude/api-a4-print-format-jusk5v]
     paths:
