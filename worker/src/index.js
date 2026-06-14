@@ -18,12 +18,6 @@ function yyyymm() {
     String(d.getMonth() + 1).padStart(2, '0');
 }
 
-async function nextId(db, table, col, prefix) {
-  const like = `${prefix}%`;
-  const r = await db.prepare(`SELECT COUNT(*) as n FROM ${table} WHERE ${col} LIKE ?`).bind(like).first();
-  return `${prefix}-${String((r?.n || 0) + 1).padStart(3, '0')}`;
-}
-
 export default {
   async fetch(req, env) {
     if (req.method === 'OPTIONS') return new Response(null, { status: 204, headers: CORS });
@@ -84,11 +78,10 @@ export default {
 
       if (method === 'POST' && path === '/api/ncr') {
         const body = await req.json();
-        const yymm = new Date().toISOString().slice(2, 7).replace('-', '');
-        const { n } = await DB.prepare(
-          `SELECT COUNT(*) as n FROM ncr_records WHERE ncr_id LIKE ?`
-        ).bind(`NCR-${yymm}%`).first() || {};
-        const ncr_id = body.ncr_id || `NCR-${yymm}-${String((n || 0) + 1).padStart(3, '0')}`;
+        const ncr_id = (body.ncr_id || '').trim();
+        if (!ncr_id) return err('กรุณาระบุ NC No. (ncr_id is required)', 400);
+        const existing = await DB.prepare('SELECT ncr_id FROM ncr_records WHERE ncr_id=?').bind(ncr_id).first();
+        if (existing) return err(`NC No. "${ncr_id}" มีอยู่แล้วในระบบ`, 409);
         await DB.prepare(`
           INSERT INTO ncr_records (
             ncr_id,issue_date,source_type,lot_no,product_lot_no,

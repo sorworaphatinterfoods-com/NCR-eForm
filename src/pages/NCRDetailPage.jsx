@@ -29,6 +29,7 @@ const CAPA_STATUS_CLS = {
 }
 
 const EMPTY_FORM = {
+  ncr_id: '',
   source_type: '',
   found_date: '',
   product_lot_no: '',
@@ -122,10 +123,14 @@ export default function NCRDetailPage() {
   const set = (key) => (e) => setForm(f => ({ ...f, [key]: e.target.value }))
 
   const handleSave = async () => {
+    if (isNew && !form.ncr_id.trim()) {
+      setError('กรุณาระบุ NC No. ก่อนบันทึก')
+      return
+    }
     setSaving(true); setError(null); setSaveMsg(null)
     try {
       if (isNew) {
-        const res = await ncrApi.create(form)
+        const res = await ncrApi.create({ ...form, ncr_id: form.ncr_id.trim() })
         navigate(`/ncr/${res.ncr_id}`)
       } else {
         await ncrApi.update(id, form)
@@ -198,6 +203,23 @@ export default function NCRDetailPage() {
             <div className="bg-white rounded-xl shadow overflow-hidden">
               <SectionTitle>ส่วน A — รายละเอียด NC</SectionTitle>
               <div className="p-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="sm:col-span-2">
+                  <FieldRow label="NC No. *">
+                    {isNew ? (
+                      <input
+                        type="text"
+                        className={inputCls + ' font-mono font-semibold'}
+                        value={form.ncr_id}
+                        onChange={set('ncr_id')}
+                        placeholder="เช่น NCR-2506-001"
+                      />
+                    ) : (
+                      <div className="border border-gray-200 bg-gray-50 rounded-lg px-3 py-2 text-sm font-mono font-semibold text-blue-800">
+                        {id}
+                      </div>
+                    )}
+                  </FieldRow>
+                </div>
                 <FieldRow label="แหล่งที่มา (Source Type)">
                   <select className={selectCls} value={form.source_type} onChange={set('source_type')}>
                     <option value="">-- เลือก --</option>
