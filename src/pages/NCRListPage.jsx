@@ -74,9 +74,17 @@ export default function NCRListPage() {
             <Link to="/capa" className="hover:bg-blue-800 px-3 py-1.5 rounded text-sm">CAPA Management</Link>
           </div>
         </div>
-        <button onClick={load} className="flex items-center gap-2 bg-blue-700 hover:bg-blue-600 px-4 py-2 rounded-lg text-sm transition">
-          <RefreshCw className="w-4 h-4" />รีเฟรช
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => navigate('/ncr/new')}
+            className="flex items-center gap-2 bg-green-600 hover:bg-green-500 px-4 py-2 rounded-lg text-sm font-medium transition"
+          >
+            + สร้าง NCR ใหม่
+          </button>
+          <button onClick={load} className="flex items-center gap-2 bg-blue-700 hover:bg-blue-600 px-4 py-2 rounded-lg text-sm transition">
+            <RefreshCw className="w-4 h-4" />รีเฟรช
+          </button>
+        </div>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 py-6">
@@ -108,19 +116,24 @@ export default function NCRListPage() {
                 <th className="px-4 py-3">Severity</th>
                 <th className="px-4 py-3">สถานะ</th>
                 <th className="px-4 py-3 text-center">พิมพ์ A4</th>
+                <th className="px-4 py-3 text-center">แก้ไข</th>
               </tr>
             </thead>
             <tbody>
               {loading ? (
-                <tr><td colSpan={7} className="text-center py-12 text-gray-400">
+                <tr><td colSpan={8} className="text-center py-12 text-gray-400">
                   <RefreshCw className="w-8 h-8 animate-spin mx-auto mb-2" />กำลังโหลด...
                 </td></tr>
               ) : filtered.length === 0 ? (
-                <tr><td colSpan={7} className="text-center py-12 text-gray-400">
+                <tr><td colSpan={8} className="text-center py-12 text-gray-400">
                   <ClipboardList className="w-10 h-10 mx-auto mb-2 opacity-30" />ไม่พบข้อมูล NCR
                 </td></tr>
               ) : filtered.map((r, i) => (
-                <tr key={r.ncr_id} className={`border-t hover:bg-blue-50 transition ${i % 2 === 0 ? '' : 'bg-gray-50'}`}>
+                <tr
+                  key={r.ncr_id}
+                  onClick={() => navigate(`/ncr/${r.ncr_id}`)}
+                  className={`border-t hover:bg-blue-50 transition cursor-pointer ${i % 2 === 0 ? '' : 'bg-gray-50'}`}
+                >
                   <td className="px-4 py-3 font-mono text-blue-800 font-medium">{r.ncr_id}</td>
                   <td className="px-4 py-3 text-gray-600">{fmt(r.issue_date)}</td>
                   <td className="px-4 py-3 text-xs">{SOURCE_TH[r.source_type] || r.source_type || '-'}</td>
@@ -137,12 +150,20 @@ export default function NCRListPage() {
                       {STATUS_TH[r.status] || r.status || '-'}
                     </span>
                   </td>
-                  <td className="px-4 py-3 text-center">
+                  <td className="px-4 py-3 text-center" onClick={e => e.stopPropagation()}>
                     <button
                       onClick={() => navigate(`/ncr/${r.ncr_id}/print`)}
                       className="inline-flex items-center gap-1 bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg text-xs font-medium transition"
                     >
                       <Printer className="w-3.5 h-3.5" />พิมพ์ A4
+                    </button>
+                  </td>
+                  <td className="px-4 py-3 text-center" onClick={e => e.stopPropagation()}>
+                    <button
+                      onClick={() => navigate(`/ncr/${r.ncr_id}`)}
+                      className="inline-flex items-center gap-1 bg-gray-600 hover:bg-gray-700 text-white px-3 py-1.5 rounded-lg text-xs font-medium transition"
+                    >
+                      แก้ไข/ดู
                     </button>
                   </td>
                 </tr>

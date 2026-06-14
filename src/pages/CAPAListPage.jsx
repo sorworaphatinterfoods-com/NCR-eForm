@@ -58,9 +58,17 @@ export default function CAPAListPage() {
             <Link to="/capa" className="bg-blue-700 px-3 py-1.5 rounded text-sm font-medium">CAPA Management</Link>
           </div>
         </div>
-        <button onClick={load} className="flex items-center gap-2 bg-blue-700 hover:bg-blue-600 px-4 py-2 rounded-lg text-sm transition">
-          <RefreshCw className="w-4 h-4" />รีเฟรช
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => navigate('/capa/new')}
+            className="flex items-center gap-2 bg-green-600 hover:bg-green-500 px-4 py-2 rounded-lg text-sm font-medium transition"
+          >
+            + สร้าง CAPA ใหม่
+          </button>
+          <button onClick={load} className="flex items-center gap-2 bg-blue-700 hover:bg-blue-600 px-4 py-2 rounded-lg text-sm transition">
+            <RefreshCw className="w-4 h-4" />รีเฟรช
+          </button>
+        </div>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 py-6">
@@ -94,15 +102,16 @@ export default function CAPAListPage() {
                 <th className="px-4 py-3">กำหนดวัน</th>
                 <th className="px-4 py-3">สถานะ</th>
                 <th className="px-4 py-3 text-center">พิมพ์ A4</th>
+                <th className="px-4 py-3 text-center">แก้ไข</th>
               </tr>
             </thead>
             <tbody>
               {loading ? (
-                <tr><td colSpan={9} className="text-center py-12 text-gray-400">
+                <tr><td colSpan={10} className="text-center py-12 text-gray-400">
                   <RefreshCw className="w-8 h-8 animate-spin mx-auto mb-2" />กำลังโหลด...
                 </td></tr>
               ) : filtered.length === 0 ? (
-                <tr><td colSpan={9} className="text-center py-12 text-gray-400">
+                <tr><td colSpan={10} className="text-center py-12 text-gray-400">
                   <ClipboardList className="w-10 h-10 mx-auto mb-2 opacity-30" />ไม่พบข้อมูล CAPA
                 </td></tr>
               ) : filtered.map((r, i) => (
@@ -129,6 +138,14 @@ export default function CAPAListPage() {
                       className="inline-flex items-center gap-1 bg-teal-600 hover:bg-teal-700 text-white px-3 py-1.5 rounded-lg text-xs font-medium transition"
                     >
                       <Printer className="w-3.5 h-3.5" />พิมพ์ A4
+                    </button>
+                  </td>
+                  <td className="px-4 py-3 text-center">
+                    <button
+                      onClick={() => navigate(`/capa/${r.capa_id}`)}
+                      className="inline-flex items-center gap-1 bg-gray-600 hover:bg-gray-700 text-white px-3 py-1.5 rounded-lg text-xs font-medium transition"
+                    >
+                      แก้ไข/ดู
                     </button>
                   </td>
                 </tr>
