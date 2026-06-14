@@ -1,34 +1,30 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { ncrApi, capaApi } from '../api/d1Api'
-import NCRFormA4 from '../components/NCRFormA4'
+import { capaApi } from '../api/d1Api'
+import CAPAFormA4 from '../components/CAPAFormA4'
 import { Printer, ArrowLeft, RefreshCw, AlertCircle } from 'lucide-react'
 
-export default function NCRPrintPage() {
+export default function CAPAPrintPage() {
   const { id } = useParams()
   const navigate = useNavigate()
-  const [ncr, setNcr] = useState(null)
   const [capa, setCapa] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
   useEffect(() => {
-    Promise.all([
-      ncrApi.get(id),
-      capaApi.listByNcr(id).then(list => list?.[0] || null).catch(() => null),
-    ])
-      .then(([ncrData, capaData]) => { setNcr(ncrData); setCapa(capaData) })
+    capaApi.get(id)
+      .then(data => setCapa(data))
       .catch(e => setError(e.message))
       .finally(() => setLoading(false))
   }, [id])
 
   return (
     <div className="min-h-screen bg-gray-200">
-      <div className="no-print bg-blue-900 text-white px-6 py-3 flex items-center justify-between shadow-lg sticky top-0 z-50">
-        <button onClick={() => navigate('/ncr')} className="flex items-center gap-2 hover:bg-blue-800 px-3 py-2 rounded-lg text-sm transition">
-          <ArrowLeft className="w-4 h-4" />กลับรายการ NCR
+      <div className="no-print bg-teal-900 text-white px-6 py-3 flex items-center justify-between shadow-lg sticky top-0 z-50">
+        <button onClick={() => navigate('/capa')} className="flex items-center gap-2 hover:bg-teal-800 px-3 py-2 rounded-lg text-sm transition">
+          <ArrowLeft className="w-4 h-4" />กลับรายการ CAPA
         </button>
-        <div className="text-sm font-medium">{ncr ? `NCR: ${ncr.ncr_id}` : 'ใบ NCR'}</div>
+        <div className="text-sm font-medium">{capa ? `CAPA: ${capa.capa_id}` : 'ใบ CAPA'}</div>
         <button
           onClick={() => window.print()}
           disabled={loading || !!error}
@@ -49,7 +45,7 @@ export default function NCRPrintPage() {
           <div><strong>โหลดข้อมูลไม่ได้:</strong><br />{error}</div>
         </div>
       )}
-      {ncr && <NCRFormA4 data={ncr} capa={capa} />}
+      {capa && <CAPAFormA4 data={capa} />}
     </div>
   )
 }
