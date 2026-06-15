@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ncrApi } from '../api/d1Api'
-import { Printer, RefreshCw, AlertCircle, ClipboardList, Plus, Search } from 'lucide-react'
+import { Printer, RefreshCw, AlertCircle, ClipboardList, Plus, Search, FileUp } from 'lucide-react'
 import Layout from '../components/Layout'
+import CSVImportModal from '../components/CSVImportModal'
 
 const STATUS = {
   Open: 'bg-red-100 text-red-700',
@@ -44,6 +45,7 @@ export default function NCRListPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [search, setSearch] = useState('')
+  const [showCSV, setShowCSV] = useState(false)
 
   const load = async () => {
     setLoading(true); setError(null)
@@ -73,6 +75,13 @@ export default function NCRListPage() {
         <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
       </button>
       <button
+        onClick={() => setShowCSV(true)}
+        className="flex items-center gap-1.5 bg-white/20 hover:bg-white/30 px-3 py-1.5 rounded-lg text-sm font-medium transition text-white"
+      >
+        <FileUp className="w-4 h-4" />
+        <span className="hidden sm:inline">นำเข้า CSV</span>
+      </button>
+      <button
         onClick={() => navigate('/ncr/new')}
         className="flex items-center gap-1.5 bg-green-500 hover:bg-green-400 px-3 py-1.5 rounded-lg text-sm font-semibold transition text-white shadow-sm"
       >
@@ -84,6 +93,13 @@ export default function NCRListPage() {
   )
 
   return (
+    <>
+    {showCSV && (
+      <CSVImportModal
+        onClose={() => setShowCSV(false)}
+        onSuccess={() => { setShowCSV(false); load() }}
+      />
+    )}
     <Layout pageActions={pageActions}>
       {/* Search bar */}
       <div className="mb-4 flex gap-2 items-center">
@@ -228,5 +244,6 @@ export default function NCRListPage() {
         </>
       )}
     </Layout>
+    </>
   )
 }
