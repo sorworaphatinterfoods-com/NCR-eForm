@@ -147,46 +147,31 @@ export default function CAPADetailPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      <div className="bg-blue-900 text-white px-6 py-4 flex items-center justify-between shadow-lg">
-        <div className="flex items-center gap-4">
-          <button
-            onClick={() => navigate('/capa')}
-            className="flex items-center gap-2 hover:bg-blue-800 px-3 py-1.5 rounded-lg text-sm transition"
-          >
-            <ArrowLeft className="w-4 h-4" />กลับ
+    <div className="min-h-screen bg-slate-50">
+      {/* Header */}
+      <header className="bg-blue-900 text-white sticky top-0 z-40 shadow-lg">
+        <div className="max-w-4xl mx-auto px-4 h-14 flex items-center gap-3">
+          <button onClick={() => navigate('/capa')} className="p-2 hover:bg-white/20 rounded-lg transition shrink-0">
+            <ArrowLeft className="w-5 h-5" />
           </button>
-          <div className="flex items-center gap-3 ml-2">
-            <ClipboardList className="w-6 h-6" />
-            <div>
-              <div className="font-bold text-lg">
-                {isNew ? 'สร้าง CAPA ใหม่' : `CAPA: ${id}`}
-              </div>
-              <div className="text-blue-200 text-xs">Corrective & Preventive Action</div>
+          <div className="flex-1 min-w-0">
+            <div className="font-bold text-sm sm:text-base truncate">
+              {isNew ? 'สร้าง CAPA ใหม่' : `CAPA: ${id}`}
             </div>
+            <div className="text-blue-300 text-xs hidden sm:block">Corrective & Preventive Action · FM-QA-21</div>
           </div>
-        </div>
-        <div className="flex items-center gap-2">
           {!isNew && (
             <button
               onClick={() => navigate(`/capa/${id}/print`)}
-              className="flex items-center gap-2 bg-blue-700 hover:bg-blue-600 px-4 py-2 rounded-lg text-sm transition"
-            >
-              <Printer className="w-4 h-4" />พิมพ์ A4
-            </button>
-          )}
-          {isNew && (
-            <button
-              disabled
-              className="flex items-center gap-2 bg-blue-800 px-4 py-2 rounded-lg text-sm opacity-40 cursor-not-allowed"
+              className="hidden sm:flex items-center gap-1.5 bg-white/20 hover:bg-white/30 px-3 py-1.5 rounded-lg text-sm transition"
             >
               <Printer className="w-4 h-4" />พิมพ์ A4
             </button>
           )}
         </div>
-      </div>
+      </header>
 
-      <div className="max-w-4xl mx-auto px-4 py-6">
+      <div className="max-w-4xl mx-auto px-4 py-4 pb-24 sm:pb-6">
         {loading ? (
           <div className="text-center py-16 text-gray-400 text-sm">กำลังโหลด...</div>
         ) : (
@@ -323,11 +308,11 @@ export default function CAPADetailPage() {
                 </FieldRow>
               </div>
 
-              <div className="px-4 pb-5 pt-2 flex justify-end">
+              <div className="px-4 pb-5 pt-2 hidden sm:flex justify-end">
                 <button
                   onClick={handleSave}
                   disabled={saving}
-                  className="flex items-center gap-2 bg-blue-700 hover:bg-blue-600 disabled:opacity-50 text-white px-6 py-2.5 rounded-lg text-sm font-semibold transition"
+                  className="flex items-center gap-2 bg-blue-700 hover:bg-blue-600 disabled:opacity-50 text-white px-6 py-2.5 rounded-xl text-sm font-semibold transition"
                 >
                   <Save className="w-4 h-4" />
                   {saving ? 'กำลังบันทึก...' : 'บันทึก'}
@@ -336,6 +321,26 @@ export default function CAPADetailPage() {
             </div>
           </>
         )}
+      </div>
+
+      {/* Sticky save bar — mobile only */}
+      <div className="sm:hidden fixed bottom-0 inset-x-0 bg-white border-t border-gray-200 px-4 py-3 flex gap-3 z-30 shadow-[0_-2px_12px_rgba(0,0,0,0.08)]">
+        {!isNew && (
+          <button
+            onClick={() => navigate(`/capa/${id}/print`)}
+            className="flex items-center gap-1.5 border border-gray-300 px-4 py-2.5 rounded-xl text-sm font-medium text-gray-700 bg-white"
+          >
+            <Printer className="w-4 h-4" />A4
+          </button>
+        )}
+        <button
+          onClick={handleSave}
+          disabled={saving}
+          className="flex-1 flex items-center justify-center gap-2 bg-blue-700 hover:bg-blue-600 disabled:opacity-50 text-white py-2.5 rounded-xl text-sm font-semibold transition"
+        >
+          <Save className="w-4 h-4" />
+          {saving ? 'กำลังบันทึก...' : 'บันทึก'}
+        </button>
       </div>
     </div>
   )
