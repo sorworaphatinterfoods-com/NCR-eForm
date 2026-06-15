@@ -3,7 +3,7 @@ import { ncrApi } from '../api/d1Api'
 import { Upload, X, Download, AlertCircle, CheckCircle, FileText } from 'lucide-react'
 
 const TEMPLATE_HEADERS = ['ncr_id', 'issue_date', 'source_type', 'nc_description', 'severity', 'product_lot_no', 'hold_location', 'reported_by', 'assignee', 'status']
-const TEMPLATE_EXAMPLE = ['NCR-2506-001', '2026-06-15', 'IN_PROCESS', 'พบสิ่งแปลกปลอมในผลิตภัณฑ์', 'High', 'LOT-2506-001', 'ห้องเย็น A', 'สมชาย ใจดี', 'สมหญิง รักงาน', 'Open']
+const TEMPLATE_EXAMPLE = ['NCR-2506-001', '2026-06-15', 'IN_PROCESS', 'พบสิ่งแปลกปลอมในผลิตภัณฑ์', 'Major', 'LOT-2506-001', 'ห้องเย็น A', 'สมชาย ใจดี', 'สมหญิง รักงาน', 'Open']
 
 const SOURCE_LABELS = {
   RM_RECEIVING: 'RM_RECEIVING',
@@ -58,7 +58,7 @@ function downloadTemplate() {
   URL.revokeObjectURL(a.href)
 }
 
-const SEV_CLS = { Critical: 'text-red-600', High: 'text-orange-600', Medium: 'text-amber-600', Low: 'text-green-600' }
+const SEV_CLS = { Critical: 'text-red-600', Major: 'text-orange-600', Minor: 'text-green-600' }
 
 export default function CSVImportModal({ onClose, onSuccess }) {
   const fileInputRef = useRef()

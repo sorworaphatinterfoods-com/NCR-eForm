@@ -34,9 +34,8 @@ const SOURCE_TH = {
 
 const SEV_CLS = {
   Critical: 'bg-red-100 text-red-700',
-  High: 'bg-orange-100 text-orange-700',
-  Medium: 'bg-amber-100 text-amber-700',
-  Low: 'bg-green-100 text-green-700',
+  Major: 'bg-orange-100 text-orange-700',
+  Minor: 'bg-green-100 text-green-700',
 }
 
 export default function NCRListPage() {

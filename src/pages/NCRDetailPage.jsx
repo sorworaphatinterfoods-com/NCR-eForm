@@ -14,7 +14,7 @@ const SOURCE_OPTIONS = [
   { value: 'OTHER', label: 'อื่นๆ' },
 ]
 
-const SEVERITY_OPTIONS = ['Critical', 'High', 'Medium', 'Low']
+const SEVERITY_OPTIONS = ['Critical', 'Major', 'Minor']
 const STATUS_OPTIONS = ['Open', 'In Investigation', 'Pending Verification', 'Closed']
 const VERIFICATION_OPTIONS = ['-', 'Effective', 'Not Effective', 'Pending']
 
