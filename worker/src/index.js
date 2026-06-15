@@ -108,6 +108,43 @@ export default {
         return ok({ ncr_id, success: true }, 201);
       }
 
+      if (method === 'POST' && path === '/api/ncr/bulk') {
+        const { records } = await req.json();
+        if (!Array.isArray(records) || records.length === 0)
+          return err('records array is required', 400);
+        const created = [], errors = [];
+        for (const r of records) {
+          const ncr_id = (r.ncr_id || '').trim();
+          if (!ncr_id) { errors.push({ ncr_id: '-', error: 'ไม่มี NC No.' }); continue; }
+          try {
+            const existing = await DB.prepare('SELECT ncr_id FROM ncr_records WHERE ncr_id=?').bind(ncr_id).first();
+            if (existing) { errors.push({ ncr_id, error: 'มีอยู่แล้วในระบบ' }); continue; }
+            await DB.prepare(`
+              INSERT INTO ncr_records (
+                ncr_id,issue_date,source_type,product_lot_no,nc_description,
+                severity,hold_location,reported_by,assignee,status,created_by,created_at,updated_at
+              ) VALUES (?,?,?,?,?,?,?,?,?,?,?,datetime('now'),datetime('now'))
+            `).bind(
+              ncr_id,
+              r.issue_date || new Date().toISOString().slice(0, 10),
+              r.source_type || 'IN_PROCESS',
+              r.product_lot_no || null,
+              r.nc_description || '',
+              r.severity || 'Medium',
+              r.hold_location || null,
+              r.reported_by || null,
+              r.assignee || null,
+              r.status || 'Open',
+              'csv_import',
+            ).run();
+            created.push(ncr_id);
+          } catch (e) {
+            errors.push({ ncr_id, error: e.message });
+          }
+        }
+        return ok({ created: created.length, errors }, 201);
+      }
+
       // ─── CAPA ─────────────────────────────────────────────────────────
       if (method === 'GET' && path === '/api/capa') {
         const ncr_id = url.searchParams.get('ncr_id');

@@ -18,6 +18,7 @@ export const ncrApi = {
   get: (id) => request(`/api/ncr/${id}`),
   create: (body) => request('/api/ncr', { method: 'POST', body: JSON.stringify(body) }),
   update: (id, body) => request(`/api/ncr/${id}`, { method: 'PATCH', body: JSON.stringify(body) }),
+  bulkCreate: (records) => request('/api/ncr/bulk', { method: 'POST', body: JSON.stringify({ records }) }),
 }
 
 export const capaApi = {
