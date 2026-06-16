@@ -1,6 +1,7 @@
 import { Link, useLocation } from 'react-router-dom'
 import { FileText, ClipboardList } from 'lucide-react'
 import { COMPANY_NAME } from '../config'
+import InstallButton from './InstallButton'
 
 export default function Layout({ children, pageActions }) {
   const { pathname } = useLocation()
@@ -23,7 +24,10 @@ export default function Layout({ children, pageActions }) {
               <ClipboardList className="w-4 h-4" />CAPA
             </Link>
           </nav>
-          {pageActions && <div className="flex items-center gap-2">{pageActions}</div>}
+          <div className="flex items-center gap-2">
+            <InstallButton />
+            {pageActions}
+          </div>
         </div>
       </header>
 
