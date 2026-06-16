@@ -31,7 +31,7 @@ const CAPA_STATUS_CLS = {
 const EMPTY_FORM = {
   ncr_id: '',
   source_type: '',
-  found_date: '',
+  issue_date: '',
   product_lot_no: '',
   defect_qty: '',
   defect_unit: '',
@@ -96,7 +96,7 @@ export default function NCRDetailPage() {
       setForm({
         ncr_id: d.ncr_id || '',
         source_type: d.source_type || '',
-        found_date: d.found_date ? d.found_date.slice(0, 10) : '',
+        issue_date: (d.issue_date || d.found_date || '').slice(0, 10),
         product_lot_no: d.product_lot_no || '',
         defect_qty: d.defect_qty ?? '',
         defect_unit: d.defect_unit || '',
@@ -211,7 +211,7 @@ export default function NCRDetailPage() {
                   </select>
                 </FieldRow>
                 <FieldRow label="วันที่พบ (Found Date)">
-                  <input type="date" className={inputCls} value={form.found_date} onChange={set('found_date')} />
+                  <input type="date" className={inputCls} value={form.issue_date} onChange={set('issue_date')} />
                 </FieldRow>
                 <FieldRow label="Lot No. สินค้า / วัตถุดิบ">
                   <input type="text" className={inputCls} value={form.product_lot_no} onChange={set('product_lot_no')} placeholder="เช่น LOT-2025-001" />

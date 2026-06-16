@@ -55,11 +55,11 @@ export default {
         }
         if (method === 'PATCH') {
           const body = await req.json();
-          const ALLOWED = ['ncr_id','nc_description','severity','status','immediate_action','lot_no',
-            'product_lot_no','hold_location','disposition','dispositioned_by','root_cause',
-            'corrective_action','preventive_action','assignee','target_date','reply_date',
-            'verification_result','verification_note','verified_by','verified_at',
-            'closed_date','related_capa_id','defect_qty','defect_unit','photo_urls'];
+          const ALLOWED = ['ncr_id','issue_date','source_type','nc_description','severity','status',
+            'immediate_action','lot_no','product_lot_no','hold_location','disposition','dispositioned_by',
+            'root_cause','corrective_action','preventive_action','reported_by','assignee',
+            'target_date','reply_date','verification_result','verification_note','verified_by',
+            'verified_at','closed_date','closed_by','related_capa_id','defect_qty','defect_unit','photo_urls'];
           const sets = [], vals = [];
           for (const k of ALLOWED) {
             if (k in body) { sets.push(`${k}=?`); vals.push(body[k]); }
