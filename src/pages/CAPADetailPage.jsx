@@ -61,7 +61,7 @@ const EMPTY_FORM = {
   corrective_action: '',
   preventive_action: '',
   effectiveness_criteria: '',
-  effectiveness_result: '-',
+  effectiveness_result: '',
   effectiveness_check_date: '',
   verified_by: '',
   verified_date: '',
@@ -113,7 +113,7 @@ export default function CAPADetailPage() {
           corrective_action: d.corrective_action || '',
           preventive_action: d.preventive_action || '',
           effectiveness_criteria: d.effectiveness_criteria || '',
-          effectiveness_result: d.effectiveness_result || '-',
+          effectiveness_result: d.effectiveness_result || '',
           effectiveness_check_date: d.effectiveness_check_date ? d.effectiveness_check_date.slice(0, 10) : '',
           verified_by: d.verified_by || '',
           verified_date: d.verified_date ? d.verified_date.slice(0, 10) : '',
@@ -288,7 +288,7 @@ export default function CAPADetailPage() {
                 </div>
                 <FieldRow label="ผลการประเมินประสิทธิผล (Effectiveness Result)">
                   <select className={selectCls} value={form.effectiveness_result} onChange={set('effectiveness_result')}>
-                    {EFFECTIVENESS_OPTS.map(o => <option key={o} value={o}>{o}</option>)}
+                    {EFFECTIVENESS_OPTS.map(o => <option key={o} value={o === '-' ? '' : o}>{o}</option>)}
                   </select>
                 </FieldRow>
                 <FieldRow label="วันที่ตรวจสอบประสิทธิผล">

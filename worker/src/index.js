@@ -62,7 +62,7 @@ export default {
             'verified_at','closed_date','closed_by','related_capa_id','defect_qty','defect_unit','photo_urls'];
           const sets = [], vals = [];
           for (const k of ALLOWED) {
-            if (k in body) { sets.push(`${k}=?`); vals.push(body[k]); }
+            if (k in body) { sets.push(`${k}=?`); vals.push(body[k] === '' ? null : body[k]); }
           }
           if (!sets.length) return err('No fields to update');
           if (body.status === 'Closed') {
@@ -178,7 +178,7 @@ export default {
             'closed_by','closed_date','actual_completion'];
           const sets = [], vals = [];
           for (const k of ALLOWED) {
-            if (k in body) { sets.push(`${k}=?`); vals.push(body[k]); }
+            if (k in body) { sets.push(`${k}=?`); vals.push(body[k] === '' ? null : body[k]); }
           }
           if (!sets.length) return err('No fields to update');
           sets.push("updated_at=datetime('now')");
