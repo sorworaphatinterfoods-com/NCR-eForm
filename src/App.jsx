@@ -5,6 +5,7 @@ import NCRDetailPage from './pages/NCRDetailPage'
 import CAPAListPage from './pages/CAPAListPage'
 import CAPAPrintPage from './pages/CAPAPrintPage'
 import CAPADetailPage from './pages/CAPADetailPage'
+import SupplierReplyPage from './pages/SupplierReplyPage'
 
 export default function App() {
   return (
@@ -19,6 +20,7 @@ export default function App() {
         <Route path="/capa/new" element={<CAPADetailPage />} />
         <Route path="/capa/:id" element={<CAPADetailPage />} />
         <Route path="/capa/:id/print" element={<CAPAPrintPage />} />
+        <Route path="/reply/:id" element={<SupplierReplyPage />} />
       </Routes>
     </BrowserRouter>
   )
