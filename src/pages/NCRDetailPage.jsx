@@ -76,7 +76,7 @@ const selectCls = 'border border-gray-300 rounded-lg px-3 py-2 text-sm focus:out
 export default function NCRDetailPage() {
   const { id } = useParams()
   const navigate = useNavigate()
-  const isNew = id === 'new'
+  const isNew = !id || id === 'new'
 
   const [form, setForm] = useState(EMPTY_FORM)
   const [capas, setCapas] = useState([])
