@@ -6,6 +6,7 @@ import CAPAListPage from './pages/CAPAListPage'
 import CAPAPrintPage from './pages/CAPAPrintPage'
 import CAPADetailPage from './pages/CAPADetailPage'
 import SupplierReplyPage from './pages/SupplierReplyPage'
+import SupplierCAPAReplyPage from './pages/SupplierCAPAReplyPage'
 
 export default function App() {
   return (
@@ -21,6 +22,7 @@ export default function App() {
         <Route path="/capa/:id" element={<CAPADetailPage />} />
         <Route path="/capa/:id/print" element={<CAPAPrintPage />} />
         <Route path="/reply/:id" element={<SupplierReplyPage />} />
+        <Route path="/capa-reply/:id" element={<SupplierCAPAReplyPage />} />
       </Routes>
     </BrowserRouter>
   )
