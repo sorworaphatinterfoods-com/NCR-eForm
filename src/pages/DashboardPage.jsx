@@ -20,6 +20,14 @@ const SOURCE_LABELS = {
 
 const SEV_COLOR = { Critical: 'bg-red-500', Major: 'bg-orange-500', Minor: 'bg-green-500' }
 const SEV_TEXT = { Critical: 'text-red-600', Major: 'text-orange-600', Minor: 'text-green-600' }
+const SEV_HEX = { Critical: '#ef4444', Major: '#f97316', Minor: '#22c55e' }
+const STATUS_HEX = {
+  Open: '#ef4444',
+  'In Investigation': '#f97316',
+  'Pending Verification': '#f59e0b',
+  Closed: '#22c55e',
+  Cancelled: '#94a3b8',
+}
 
 const TH_MONTHS = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.']
 
@@ -70,6 +78,56 @@ function BarList({ title, data, colorFn }) {
               <div className="w-8 text-right text-xs font-semibold text-gray-700 tabular-nums">{d.value}</div>
             </div>
           ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
+function PieChart({ title, data }) {
+  const total = data.reduce((s, d) => s + d.value, 0)
+  const R = 60, STROKE = 26, C = 2 * Math.PI * R
+  let acc = 0
+
+  return (
+    <div className="bg-white rounded-xl shadow p-4">
+      <h3 className="text-sm font-semibold text-gray-700 mb-3">{title}</h3>
+      {total === 0 ? (
+        <div className="text-xs text-gray-400 py-4 text-center">ไม่มีข้อมูล</div>
+      ) : (
+        <div className="flex items-center gap-4">
+          <svg viewBox="0 0 160 160" className="w-36 h-36 shrink-0 -rotate-90">
+            <circle cx="80" cy="80" r={R} fill="none" stroke="#f1f5f9" strokeWidth={STROKE} />
+            {data.map((d) => {
+              const frac = d.value / total
+              const seg = frac * C
+              const el = (
+                <circle
+                  key={d.label}
+                  cx="80" cy="80" r={R} fill="none"
+                  stroke={d.color} strokeWidth={STROKE}
+                  strokeDasharray={`${seg} ${C - seg}`}
+                  strokeDashoffset={-acc}
+                />
+              )
+              acc += seg
+              return el
+            })}
+            <text x="80" y="80" transform="rotate(90 80 80)" textAnchor="middle" dominantBaseline="central"
+              className="fill-gray-800" style={{ fontSize: '26px', fontWeight: 700 }}>
+              {total}
+            </text>
+          </svg>
+          <div className="flex flex-col gap-1.5 flex-1 min-w-0">
+            {data.map((d) => (
+              <div key={d.label} className="flex items-center gap-2 text-xs">
+                <span className="w-3 h-3 rounded-sm shrink-0" style={{ background: d.color }} />
+                <span className="text-gray-600 truncate flex-1">{d.label}</span>
+                <span className="font-semibold text-gray-800 tabular-nums">{d.value}</span>
+                <span className="text-gray-400 tabular-nums w-9 text-right">{Math.round((d.value / total) * 100)}%</span>
+              </div>
+            ))}
+          </div>
         </div>
       )}
     </div>
@@ -159,7 +217,12 @@ export default function DashboardPage() {
     const severityOrder = ['Critical', 'Major', 'Minor']
     const severity = severityOrder
       .filter((s) => bySeverity[s])
-      .map((s) => ({ label: s, value: bySeverity[s] }))
+      .map((s) => ({ label: s, value: bySeverity[s], color: SEV_HEX[s] }))
+
+    const statusOrder = ['Open', 'In Investigation', 'Pending Verification', 'Closed', 'Cancelled']
+    const statusDist = statusOrder
+      .filter((s) => byStatus[s])
+      .map((s) => ({ label: s, value: byStatus[s], color: STATUS_HEX[s] || '#94a3b8' }))
 
     const source = Object.entries(bySource)
       .map(([k, v]) => ({ label: SOURCE_LABELS[k] || k, value: v }))
@@ -174,7 +237,7 @@ export default function DashboardPage() {
       overdue,
       overdueList: overdueList.sort((a, b) => (a.target_date || '').localeCompare(b.target_date || '')),
       avgDays: closedCount ? Math.round(closedDaysSum / closedCount) : null,
-      monthly, severity, source,
+      monthly, severity, statusDist, source,
     }
   }, [ncrs])
 
@@ -220,12 +283,14 @@ export default function DashboardPage() {
             <StatCard icon={TrendingUp} label="เดือนล่าสุด" value={stats.monthly.length ? stats.monthly[stats.monthly.length - 1].value : 0} tone="slate" />
           </div>
 
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+            <PieChart title="แยกตามความรุนแรง (Severity)" data={stats.severity} />
+            <PieChart title="แยกตามสถานะ (Status)" data={stats.statusDist} />
+          </div>
+
           <MonthlyTrend data={stats.monthly} />
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-            <BarList title="แยกตามความรุนแรง (Severity)" data={stats.severity} colorFn={(d) => SEV_COLOR[d.label] || 'bg-blue-500'} />
-            <BarList title="แยกตามแหล่งที่มา (Source)" data={stats.source} />
-          </div>
+          <BarList title="แยกตามแหล่งที่มา (Source)" data={stats.source} />
 
           {/* Overdue list */}
           <div className="bg-white rounded-xl shadow p-4">

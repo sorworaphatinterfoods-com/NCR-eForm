@@ -1,5 +1,5 @@
 // NCR eForm service worker — app-shell caching for installable PWA
-const CACHE = 'ncr-eform-v3'
+const CACHE = 'ncr-eform-v4'
 const APP_SHELL = ['/', '/ncr', '/manifest.webmanifest', '/icons/icon-192.png', '/icons/icon-512.png']
 
 self.addEventListener('install', (event) => {
