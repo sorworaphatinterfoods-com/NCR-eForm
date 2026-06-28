@@ -1,10 +1,11 @@
 import { Link, useLocation } from 'react-router-dom'
-import { FileText, ClipboardList } from 'lucide-react'
+import { FileText, ClipboardList, LayoutDashboard } from 'lucide-react'
 import { COMPANY_NAME } from '../config'
 import InstallButton from './InstallButton'
 
 export default function Layout({ children, pageActions }) {
   const { pathname } = useLocation()
+  const isDashboard = pathname.startsWith('/dashboard')
   const isNCR = pathname.startsWith('/ncr')
   const isCAPA = pathname.startsWith('/capa')
 
@@ -17,6 +18,9 @@ export default function Layout({ children, pageActions }) {
             <div className="text-blue-300 text-[11px] hidden sm:block">QA eForm · FM-QA-20 / FM-QA-21</div>
           </div>
           <nav className="hidden sm:flex items-center gap-1">
+            <Link to="/dashboard" className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition ${isDashboard ? 'bg-white/20' : 'text-blue-200 hover:bg-white/10 hover:text-white'}`}>
+              <LayoutDashboard className="w-4 h-4" />แดชบอร์ด
+            </Link>
             <Link to="/ncr" className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition ${isNCR ? 'bg-white/20' : 'text-blue-200 hover:bg-white/10 hover:text-white'}`}>
               <FileText className="w-4 h-4" />NCR
             </Link>
@@ -36,6 +40,10 @@ export default function Layout({ children, pageActions }) {
       </div>
 
       <nav className="sm:hidden fixed bottom-0 inset-x-0 bg-white border-t border-gray-200 z-40 flex shadow-[0_-2px_12px_rgba(0,0,0,0.08)]">
+        <Link to="/dashboard" className={`flex-1 flex flex-col items-center py-3 gap-0.5 transition ${isDashboard ? 'text-blue-700' : 'text-gray-400'}`}>
+          <LayoutDashboard className="w-5 h-5" />
+          <span className="text-[11px] font-medium">แดชบอร์ด</span>
+        </Link>
         <Link to="/ncr" className={`flex-1 flex flex-col items-center py-3 gap-0.5 transition ${isNCR ? 'text-blue-700' : 'text-gray-400'}`}>
           <FileText className="w-5 h-5" />
           <span className="text-[11px] font-medium">NCR</span>

@@ -7,12 +7,14 @@ import CAPAPrintPage from './pages/CAPAPrintPage'
 import CAPADetailPage from './pages/CAPADetailPage'
 import SupplierReplyPage from './pages/SupplierReplyPage'
 import SupplierCAPAReplyPage from './pages/SupplierCAPAReplyPage'
+import DashboardPage from './pages/DashboardPage'
 
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Navigate to="/ncr" replace />} />
+        <Route path="/" element={<Navigate to="/dashboard" replace />} />
+        <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/ncr" element={<NCRListPage />} />
         <Route path="/ncr/new" element={<NCRDetailPage />} />
         <Route path="/ncr/:id" element={<NCRDetailPage />} />
