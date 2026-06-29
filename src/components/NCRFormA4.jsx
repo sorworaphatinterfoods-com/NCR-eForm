@@ -1,4 +1,12 @@
 import { COMPANY_NAME, COMPANY_NAME_EN, FORM_CODE_NCR, FORM_REVISION } from '../config'
+import { PROCESSES, byCode } from '../data/masterData'
+
+const PROCESS_LABEL = byCode(PROCESSES)
+const procText = (d) => {
+  if (!d.process_ref) return '-'
+  const lbl = PROCESS_LABEL[d.process_ref]
+  return lbl ? `${d.process_ref} - ${lbl}` : d.process_ref
+}
 
 const fmt = (d) => {
   if (!d) return '-'
@@ -79,17 +87,37 @@ export default function NCRFormA4({ data, capa }) {
           </tr>
           <tr>
             <td className="label-cell">Product / Lot No.</td>
-            <td className="value-cell" style={{ fontFamily: 'monospace', fontSize: '9pt' }}>
+            <td colSpan={3} className="value-cell" style={{ fontFamily: 'monospace', fontSize: '9pt' }}>
               {d.product_lot_no || d.lot_no || '-'}
-            </td>
-            <td className="label-cell">จำนวน / Quantity</td>
-            <td className="value-cell">
-              {d.defect_qty ? `${d.defect_qty} ${d.defect_unit || ''}`.trim() : '-'}
             </td>
           </tr>
           <tr>
+            <td className="label-cell">กระบวนการ / Process</td>
+            <td className="value-cell">{procText(d)}</td>
+            <td className="label-cell">วัตถุดิบ / Material · FG</td>
+            <td className="value-cell">{val(d.material_name || d.material_code)}</td>
+          </tr>
+          <tr>
+            <td className="label-cell">ซัพพลายเออร์ / Supplier</td>
+            <td className="value-cell">{val(d.supplier_name || d.supplier_id)}</td>
+            <td className="label-cell">พารามิเตอร์ / Parameter</td>
+            <td className="value-cell">{val(d.parameter_name || d.parameter_id)}</td>
+          </tr>
+          <tr>
+            <td className="label-cell">ค่ามาตรฐาน / Critical Limit</td>
+            <td className="value-cell">{val(d.critical_limit)}</td>
+            <td className="label-cell">ผลจริง / Actual Result</td>
+            <td className="value-cell">{val(d.actual_result)}</td>
+          </tr>
+          <tr>
+            <td className="label-cell">Visual Check</td>
+            <td className="value-cell">{val(d.visual_check)}</td>
             <td className="label-cell">สถานที่ Hold / Hold Location</td>
             <td className="value-cell">{val(d.hold_location)}</td>
+          </tr>
+          <tr>
+            <td className="label-cell">จำนวน / Quantity</td>
+            <td className="value-cell">{d.defect_qty ? `${d.defect_qty} ${d.defect_unit || ''}`.trim() : '-'}</td>
             <td className="label-cell">Severity</td>
             <td className="value-cell">
               <span style={{ ...sevStyle, padding: '1px 8px', borderRadius: '3px', fontSize: '8pt', fontWeight: '700' }}>

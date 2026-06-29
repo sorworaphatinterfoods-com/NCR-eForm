@@ -2,8 +2,8 @@ import { useState, useRef, useCallback } from 'react'
 import { ncrApi } from '../api/d1Api'
 import { Upload, X, Download, AlertCircle, CheckCircle, FileText } from 'lucide-react'
 
-const TEMPLATE_HEADERS = ['ncr_id', 'issue_date', 'source_type', 'nc_description', 'severity', 'product_lot_no', 'hold_location', 'reported_by', 'assignee', 'status']
-const TEMPLATE_EXAMPLE = ['NCR-2506-001', '2026-06-15', 'IN_PROCESS', 'พบสิ่งแปลกปลอมในผลิตภัณฑ์', 'Major', 'LOT-2506-001', 'ห้องเย็น A', 'สมชาย ใจดี', 'สมหญิง รักงาน', 'Open']
+const TEMPLATE_HEADERS = ['ncr_id', 'issue_date', 'source_type', 'process_ref', 'material_code', 'material_name', 'supplier_id', 'supplier_name', 'parameter_id', 'parameter_name', 'critical_limit', 'actual_result', 'visual_check', 'nc_description', 'severity', 'product_lot_no', 'hold_location', 'reported_by', 'assignee', 'root_cause', 'corrective_action', 'target_date', 'reply_date', 'verification_result', 'status', 'closed_date']
+const TEMPLATE_EXAMPLE = ['NCR-256905-001', '2026-05-15', 'RM_RECEIVING', 'PC0001', 'RM0001', 'สะโพกหมู', 'SP0001', 'บริษัท เบทาโกร', 'PR0017', 'สิ่งแปลกปลอม', 'ไม่พบสิ่งแปลกปลอม', 'พบเศษโลหะ', 'ไม่ผ่าน', 'พบสิ่งแปลกปลอมในวัตถุดิบ', 'Major', 'LOT-2505-001', 'ห้องเย็น A', 'สมชาย ใจดี', 'สมหญิง รักงาน', '', '', '2026-05-20', '', 'Pending', 'Open', '']
 
 const SOURCE_LABELS = {
   RM_RECEIVING: 'RM_RECEIVING',

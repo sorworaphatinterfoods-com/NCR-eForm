@@ -1,7 +1,13 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, useParams, Link } from 'react-router-dom'
 import { ncrApi, capaApi } from '../api/d1Api'
+import { PROCESSES, PARAMETERS, SUPPLIERS, MATERIALS, byCode } from '../data/masterData'
 import { Save, ArrowLeft, Printer, Plus, ClipboardList, Link2, Check } from 'lucide-react'
+
+const PROCESS_LABEL = byCode(PROCESSES)
+const PARAM_LABEL = byCode(PARAMETERS)
+const SUPPLIER_LABEL = byCode(SUPPLIERS)
+const MATERIAL_LABEL = byCode(MATERIALS)
 
 const SOURCE_OPTIONS = [
   { value: 'RM_RECEIVING', label: 'รับวัตถุดิบ' },
@@ -33,6 +39,13 @@ const EMPTY_FORM = {
   source_type: '',
   issue_date: '',
   product_lot_no: '',
+  process_ref: '',
+  material_code: '',
+  supplier_id: '',
+  parameter_id: '',
+  critical_limit: '',
+  actual_result: '',
+  visual_check: '',
   defect_qty: '',
   defect_unit: '',
   hold_location: '',
@@ -99,6 +112,13 @@ export default function NCRDetailPage() {
         source_type: d.source_type || '',
         issue_date: (d.issue_date || d.found_date || '').slice(0, 10),
         product_lot_no: d.product_lot_no || '',
+        process_ref: d.process_ref || '',
+        material_code: d.material_code || '',
+        supplier_id: d.supplier_id || '',
+        parameter_id: d.parameter_id || '',
+        critical_limit: d.critical_limit || '',
+        actual_result: d.actual_result || '',
+        visual_check: d.visual_check || '',
         defect_qty: d.defect_qty ?? '',
         defect_unit: d.defect_unit || '',
         hold_location: d.hold_location || '',
@@ -143,12 +163,19 @@ export default function NCRDetailPage() {
       return
     }
     setSaving(true); setError(null); setSaveMsg(null)
+    const payload = {
+      ...form,
+      ncr_id: form.ncr_id.trim(),
+      material_name: MATERIAL_LABEL[form.material_code] || '',
+      supplier_name: SUPPLIER_LABEL[form.supplier_id] || '',
+      parameter_name: PARAM_LABEL[form.parameter_id] || '',
+    }
     try {
       if (isNew) {
-        const res = await ncrApi.create({ ...form, ncr_id: form.ncr_id.trim() })
+        const res = await ncrApi.create(payload)
         navigate(`/ncr/${res.ncr_id}`)
       } else {
-        const res = await ncrApi.update(id, { ...form, ncr_id: form.ncr_id.trim() })
+        const res = await ncrApi.update(id, payload)
         const newId = res?.ncr_id || id
         setSaveMsg('บันทึกสำเร็จ')
         setTimeout(() => setSaveMsg(null), 3000)
@@ -288,6 +315,45 @@ export default function NCRDetailPage() {
                     {STATUS_OPTIONS.map(s => <option key={s} value={s}>{s}</option>)}
                   </select>
                 </FieldRow>
+              </div>
+
+              <SectionTitle>ส่วน A2 — กระบวนการ & พารามิเตอร์ (QC)</SectionTitle>
+              <div className="p-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <FieldRow label="กระบวนการ (Process)">
+                  <select className={selectCls} value={form.process_ref} onChange={set('process_ref')}>
+                    <option value="">-- เลือก --</option>
+                    {PROCESSES.map(o => <option key={o.code} value={o.code}>{o.code} - {o.label}</option>)}
+                  </select>
+                </FieldRow>
+                <FieldRow label="วัตถุดิบ / ผลิตภัณฑ์ (Material / FG)">
+                  <select className={selectCls} value={form.material_code} onChange={set('material_code')}>
+                    <option value="">-- เลือก --</option>
+                    {MATERIALS.map(o => <option key={o.code} value={o.code}>{o.code} {o.label}</option>)}
+                  </select>
+                </FieldRow>
+                <FieldRow label="ซัพพลายเออร์ (Supplier)">
+                  <select className={selectCls} value={form.supplier_id} onChange={set('supplier_id')}>
+                    <option value="">-- เลือก --</option>
+                    {SUPPLIERS.map(o => <option key={o.code} value={o.code}>{o.code} {o.label}</option>)}
+                  </select>
+                </FieldRow>
+                <FieldRow label="พารามิเตอร์ / CCP (Parameter)">
+                  <select className={selectCls} value={form.parameter_id} onChange={set('parameter_id')}>
+                    <option value="">-- เลือก --</option>
+                    {PARAMETERS.map(o => <option key={o.code} value={o.code}>{o.code} {o.label}</option>)}
+                  </select>
+                </FieldRow>
+                <FieldRow label="ค่ามาตรฐาน (Critical Limit)">
+                  <input type="text" className={inputCls} value={form.critical_limit} onChange={set('critical_limit')} />
+                </FieldRow>
+                <FieldRow label="ผลจริง (Actual Result)">
+                  <input type="text" className={inputCls} value={form.actual_result} onChange={set('actual_result')} />
+                </FieldRow>
+                <div className="sm:col-span-2">
+                  <FieldRow label="Visual Check">
+                    <input type="text" className={inputCls} value={form.visual_check} onChange={set('visual_check')} />
+                  </FieldRow>
+                </div>
               </div>
 
               <SectionTitle>ส่วน B — Root Cause & Actions (ไม่บังคับ)</SectionTitle>

@@ -59,7 +59,9 @@ export default {
             'immediate_action','lot_no','product_lot_no','hold_location','disposition','dispositioned_by',
             'root_cause','corrective_action','preventive_action','reported_by','assignee',
             'target_date','reply_date','verification_result','verification_note','verified_by',
-            'verified_at','closed_date','closed_by','related_capa_id','defect_qty','defect_unit','photo_urls'];
+            'verified_at','closed_date','closed_by','related_capa_id','defect_qty','defect_unit','photo_urls',
+            'process_ref','material_code','material_name','supplier_id','supplier_name',
+            'parameter_id','parameter_name','critical_limit','actual_result','visual_check'];
           const sets = [], vals = [];
           for (const k of ALLOWED) {
             if (k in body) { sets.push(`${k}=?`); vals.push(body[k] === '' ? null : body[k]); }
@@ -90,8 +92,11 @@ export default {
             ncr_id,issue_date,source_type,lot_no,product_lot_no,
             nc_description,severity,immediate_action,defect_qty,defect_unit,
             hold_location,disposition,dispositioned_by,reported_by,
-            assignee,target_date,status,created_by,created_at,updated_at
-          ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,datetime('now'),datetime('now'))
+            assignee,target_date,status,
+            process_ref,material_code,material_name,supplier_id,supplier_name,
+            parameter_id,parameter_name,critical_limit,actual_result,visual_check,
+            created_by,created_at,updated_at
+          ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,datetime('now'),datetime('now'))
         `).bind(
           ncr_id,
           body.issue_date || new Date().toISOString().slice(0, 10),
@@ -106,6 +111,11 @@ export default {
           body.reported_by || null,
           body.assignee || null, body.target_date || null,
           body.status || 'Open',
+          body.process_ref || null,
+          body.material_code || null, body.material_name || null,
+          body.supplier_id || null, body.supplier_name || null,
+          body.parameter_id || null, body.parameter_name || null,
+          body.critical_limit || null, body.actual_result || null, body.visual_check || null,
           body.created_by || 'system',
         ).run();
         return ok({ ncr_id, success: true }, 201);
@@ -122,22 +132,34 @@ export default {
           try {
             const existing = await DB.prepare('SELECT ncr_id FROM ncr_records WHERE ncr_id=?').bind(ncr_id).first();
             if (existing) { errors.push({ ncr_id, error: 'มีอยู่แล้วในระบบ' }); continue; }
+            const nz = (v) => { const s = (v ?? '').toString().trim(); return s === '' ? null : s; };
             await DB.prepare(`
               INSERT INTO ncr_records (
                 ncr_id,issue_date,source_type,product_lot_no,nc_description,
-                severity,hold_location,reported_by,assignee,status,created_by,created_at,updated_at
-              ) VALUES (?,?,?,?,?,?,?,?,?,?,?,datetime('now'),datetime('now'))
+                severity,hold_location,reported_by,assignee,status,
+                process_ref,material_code,material_name,supplier_id,supplier_name,
+                parameter_id,parameter_name,critical_limit,actual_result,visual_check,
+                root_cause,corrective_action,preventive_action,target_date,reply_date,
+                verification_result,closed_date,created_by,created_at,updated_at
+              ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,datetime('now'),datetime('now'))
             `).bind(
               ncr_id,
               r.issue_date || new Date().toISOString().slice(0, 10),
               r.source_type || 'IN_PROCESS',
-              r.product_lot_no || null,
+              nz(r.product_lot_no),
               r.nc_description || '',
               r.severity || 'Major',
-              r.hold_location || null,
-              r.reported_by || null,
-              r.assignee || null,
+              nz(r.hold_location),
+              nz(r.reported_by),
+              nz(r.assignee),
               r.status || 'Open',
+              nz(r.process_ref), nz(r.material_code), nz(r.material_name),
+              nz(r.supplier_id), nz(r.supplier_name),
+              nz(r.parameter_id), nz(r.parameter_name),
+              nz(r.critical_limit), nz(r.actual_result), nz(r.visual_check),
+              nz(r.root_cause), nz(r.corrective_action), nz(r.preventive_action),
+              nz(r.target_date), nz(r.reply_date),
+              nz(r.verification_result), nz(r.closed_date),
               'csv_import',
             ).run();
             created.push(ncr_id);

@@ -2,6 +2,9 @@ import { useState, useEffect, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Layout from '../components/Layout'
 import { ncrApi, capaApi } from '../api/d1Api'
+import { PROCESSES, byCode } from '../data/masterData'
+
+const PROCESS_LABEL = byCode(PROCESSES)
 import {
   FileText, AlertTriangle, Clock, CheckCircle2, Search, ShieldAlert,
   TrendingUp, RefreshCw, ClipboardList,
@@ -185,7 +188,7 @@ export default function DashboardPage() {
 
   const stats = useMemo(() => {
     const today = new Date().toISOString().slice(0, 10)
-    const byStatus = {}, bySeverity = {}, bySource = {}, byMonth = {}
+    const byStatus = {}, bySeverity = {}, bySource = {}, byMonth = {}, byProcess = {}
     let overdue = 0, closedDaysSum = 0, closedCount = 0
     const overdueList = []
 
@@ -194,6 +197,7 @@ export default function DashboardPage() {
       if (r.severity) bySeverity[r.severity] = (bySeverity[r.severity] || 0) + 1
       const src = r.source_type || 'OTHER'
       bySource[src] = (bySource[src] || 0) + 1
+      if (r.process_ref) byProcess[r.process_ref] = (byProcess[r.process_ref] || 0) + 1
 
       const d = (r.issue_date || '').slice(0, 7) // YYYY-MM
       if (d) byMonth[d] = (byMonth[d] || 0) + 1
@@ -228,6 +232,10 @@ export default function DashboardPage() {
       .map(([k, v]) => ({ label: SOURCE_LABELS[k] || k, value: v }))
       .sort((a, b) => b.value - a.value)
 
+    const process = Object.entries(byProcess)
+      .map(([k, v]) => ({ label: PROCESS_LABEL[k] ? `${k} ${PROCESS_LABEL[k]}` : k, value: v }))
+      .sort((a, b) => b.value - a.value)
+
     return {
       total: ncrs.length,
       open: byStatus['Open'] || 0,
@@ -237,7 +245,7 @@ export default function DashboardPage() {
       overdue,
       overdueList: overdueList.sort((a, b) => (a.target_date || '').localeCompare(b.target_date || '')),
       avgDays: closedCount ? Math.round(closedDaysSum / closedCount) : null,
-      monthly, severity, statusDist, source,
+      monthly, severity, statusDist, source, process,
     }
   }, [ncrs])
 
@@ -291,6 +299,8 @@ export default function DashboardPage() {
           <MonthlyTrend data={stats.monthly} />
 
           <BarList title="แยกตามแหล่งที่มา (Source)" data={stats.source} />
+
+          <BarList title="NCR แยกตามกระบวนการ (Process)" data={stats.process} />
 
           {/* Overdue list */}
           <div className="bg-white rounded-xl shadow p-4">
