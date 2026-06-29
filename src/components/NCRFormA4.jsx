@@ -242,19 +242,19 @@ export default function NCRFormA4({ data, capa }) {
         <tbody>
           <tr>
             <td style={{ width: '33.33%', padding: '4px 8px', textAlign: 'center' }}>
-              <div style={{ fontSize: '8pt', fontWeight: '600', marginBottom: '18px' }}>ผู้รายงาน / Reported by</div>
+              <div style={{ fontSize: '8pt', fontWeight: '600', marginBottom: '18px' }}>ผู้จัดทำ / Prepared by</div>
               <div className="signature-line">{val(d.reported_by)}</div>
               <div style={{ fontSize: '7.5pt', marginTop: '3px', color: '#555' }}>วันที่: {fmt(d.issue_date)}</div>
             </td>
             <td style={{ width: '33.33%', padding: '4px 8px', textAlign: 'center' }}>
-              <div style={{ fontSize: '8pt', fontWeight: '600', marginBottom: '18px' }}>ผู้ตรวจสอบ / Reviewed by</div>
-              <div className="signature-line">{val(d.verified_by)}</div>
-              <div style={{ fontSize: '7.5pt', marginTop: '3px', color: '#555' }}>วันที่: {fmt(d.verified_at)}</div>
-            </td>
-            <td style={{ width: '33.33%', padding: '4px 8px', textAlign: 'center' }}>
-              <div style={{ fontSize: '8pt', fontWeight: '600', marginBottom: '18px' }}>ผู้อนุมัติ / Approved by</div>
+              <div style={{ fontSize: '8pt', fontWeight: '600', marginBottom: '18px' }}>ผู้รับผิดชอบ / Responsible</div>
               <div className="signature-line">{val(d.assignee)}</div>
               <div style={{ fontSize: '7.5pt', marginTop: '3px', color: '#555' }}>วันที่: {fmt(d.reply_date)}</div>
+            </td>
+            <td style={{ width: '33.33%', padding: '4px 8px', textAlign: 'center' }}>
+              <div style={{ fontSize: '8pt', fontWeight: '600', marginBottom: '18px' }}>ผู้ตรวจสอบ / Checked by</div>
+              <div className="signature-line">{val(d.verified_by)}</div>
+              <div style={{ fontSize: '7.5pt', marginTop: '3px', color: '#555' }}>วันที่: {fmt(d.verified_at)}</div>
             </td>
           </tr>
         </tbody>
