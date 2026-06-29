@@ -197,7 +197,11 @@ export default function DashboardPage() {
       if (r.severity) bySeverity[r.severity] = (bySeverity[r.severity] || 0) + 1
       const src = r.source_type || 'OTHER'
       bySource[src] = (bySource[src] || 0) + 1
-      if (r.process_ref) byProcess[r.process_ref] = (byProcess[r.process_ref] || 0) + 1
+      if (r.process_ref) {
+        // normalize to the leading process code (data may store "PC0001" or "PC0001 - ชื่อ")
+        const pcode = (String(r.process_ref).match(/^PC\d{4}/) || [r.process_ref])[0]
+        byProcess[pcode] = (byProcess[pcode] || 0) + 1
+      }
 
       const d = (r.issue_date || '').slice(0, 7) // YYYY-MM
       if (d) byMonth[d] = (byMonth[d] || 0) + 1
