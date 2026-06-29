@@ -66,8 +66,11 @@ export default {
           }
           if (!sets.length) return err('No fields to update');
           if (body.status === 'Closed') {
-            sets.push("closed_date=date('now')");
-            sets.push("days_open=CAST(julianday('now')-julianday(issue_date) AS INTEGER)");
+            const cd = (body.closed_date || '').trim();
+            // Only auto-fill closed_date when the user didn't pick one.
+            if (!cd) sets.push("closed_date=date('now')");
+            sets.push("days_open=CAST(julianday(?)-julianday(issue_date) AS INTEGER)");
+            vals.push(cd || new Date().toISOString().slice(0, 10));
           }
           sets.push("updated_at=datetime('now')");
           vals.push(id);
